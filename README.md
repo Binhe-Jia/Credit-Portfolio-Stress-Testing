@@ -315,3 +315,7 @@ Use PCA on the firm return covariance matrix to estimate empirical systematic fa
 
 Replace the Gaussian factor model with a t-copula or other heavy-tailed dependence structure.
 
+
+### 6. Note
+This project is still WIP, and open to further update and modification
+
