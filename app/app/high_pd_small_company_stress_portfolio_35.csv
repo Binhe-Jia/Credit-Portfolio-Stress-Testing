@@ -1,0 +1,36 @@
+ticker,sector_group,ead,lgd
+AMC,Consumer,35000000,0.75
+GME,Consumer,30000000,0.65
+CVNA,Consumer,45000000,0.78
+BYND,Consumer,22000000,0.80
+PTON,Consumer,28000000,0.72
+W,Consumer,32000000,0.70
+CHWY,Consumer,26000000,0.62
+DKNG,Consumer,30000000,0.65
+RIVN,Consumer,42000000,0.68
+LCID,Consumer,38000000,0.72
+SPCE,Industrials,18000000,0.85
+RUN,Industrials,36000000,0.70
+CHPT,Industrials,20000000,0.78
+BLNK,Industrials,16000000,0.82
+EVGO,Industrials,22000000,0.76
+PLUG,Industrials,30000000,0.74
+QS,Industrials,24000000,0.72
+FSLY,Technology,25000000,0.68
+UPST,Technology,28000000,0.70
+AFRM,Technology,42000000,0.65
+AI,Technology,26000000,0.66
+U,Technology,35000000,0.64
+PATH,Technology,23000000,0.62
+TWLO,Technology,38000000,0.60
+SOFI,Financials,40000000,0.58
+HOOD,Financials,36000000,0.60
+MARA,Financials,30000000,0.75
+RIOT,Financials,28000000,0.74
+COIN,Financials,50000000,0.65
+OPEN,Real Estate,30000000,0.78
+RDFN,Real Estate,24000000,0.75
+COMP,Real Estate,18000000,0.72
+SNAP,Communication Services,45000000,0.66
+ROKU,Communication Services,36000000,0.64
+LYFT,Industrials,40000000,0.66

@@ -1,0 +1,26 @@
+ticker,sector_group,ead,lgd
+AAPL,Technology,75000000,0.42
+MSFT,Technology,90000000,0.40
+NVDA,Technology,65000000,0.45
+CRM,Technology,55000000,0.48
+JPM,Financials,120000000,0.50
+BAC,Financials,95000000,0.52
+C,Financials,85000000,0.58
+WFC,Financials,90000000,0.55
+XOM,Energy,80000000,0.43
+CVX,Energy,70000000,0.42
+SLB,Energy,50000000,0.50
+MPC,Energy,60000000,0.47
+CAT,Industrials,65000000,0.46
+BA,Industrials,85000000,0.60
+UPS,Industrials,70000000,0.48
+DE,Industrials,55000000,0.45
+AMZN,Consumer,100000000,0.44
+WMT,Consumer,75000000,0.38
+NKE,Consumer,45000000,0.50
+TGT,Consumer,60000000,0.53
+JNJ,Healthcare,70000000,0.36
+PFE,Healthcare,55000000,0.44
+UNH,Healthcare,90000000,0.38
+PLD,Real Estate,65000000,0.55
+SPG,Real Estate,50000000,0.62
