@@ -47,6 +47,8 @@ class AnalysisConfig:
     asset_drift: float = 0.05
     trading_days: int = 252
     random_seed: int = 42
+    market_data_timeout: int = 15
+    drop_unavailable_tickers: bool = True
 
 
 def standardize_portfolio_input(
@@ -131,23 +133,52 @@ def download_price_data(tickers: list[str], factor_tickers: list[str], config: A
         progress=False,
         group_by="column",
         threads=True,
+        timeout=config.market_data_timeout,
     )
     prices = _close_prices(raw)
     if len(all_tickers) == 1:
         prices.columns = all_tickers
     prices = prices.dropna(axis=1, how="all")
-    missing = sorted(set(tickers) - set(prices.columns))
-    if missing:
-        raise ValueError(f"No price history returned for: {', '.join(missing)}")
     if "SPY" not in prices.columns:
         raise ValueError("SPY price history is required as the broad market factor.")
     return prices
 
 
+def validate_market_data(
+    portfolio_df: pd.DataFrame,
+    config: AnalysisConfig,
+) -> tuple[pd.DataFrame, pd.DataFrame, list[str], list[str], list[str]]:
+    tickers = portfolio_df["ticker"].tolist()
+    factor_tickers = sorted(set(["SPY"] + portfolio_df["sector_etf"].tolist()))
+    prices = download_price_data(tickers, factor_tickers, config)
+    available_tickers = sorted(set(tickers).intersection(prices.columns))
+    missing_tickers = sorted(set(tickers) - set(available_tickers))
+
+    if missing_tickers and not config.drop_unavailable_tickers:
+        raise ValueError(
+            "No price history returned for: "
+            + ", ".join(missing_tickers)
+            + ". Remove these tickers or enable 'Drop unavailable tickers and continue'."
+        )
+
+    filtered_portfolio = portfolio_df.loc[portfolio_df["ticker"].isin(available_tickers)].copy()
+    if filtered_portfolio.empty:
+        raise ValueError("No portfolio tickers returned usable price history. Check ticker symbols and date range.")
+    return filtered_portfolio, prices, available_tickers, missing_tickers, factor_tickers
+
+
 def fetch_company_metadata(tickers: list[str]) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     for ticker in tickers:
-        info = yf.Ticker(ticker).info
+        try:
+            info = yf.Ticker(ticker).get_info(timeout=10)
+        except TypeError:
+            try:
+                info = yf.Ticker(ticker).info
+            except Exception:
+                info = {}
+        except Exception:
+            info = {}
         rows.append(
             {
                 "ticker": ticker,
@@ -352,10 +383,8 @@ def apply_credit_stress(base_df: pd.DataFrame, **kwargs: Any) -> pd.DataFrame:
 
 def analyze_portfolio(portfolio_input: pd.DataFrame | str | Path, config: AnalysisConfig) -> dict[str, Any]:
     portfolio_df = standardize_portfolio_input(portfolio_input)
+    portfolio_df, prices, available_tickers, missing_price_tickers, factor_tickers = validate_market_data(portfolio_df, config)
     tickers = portfolio_df["ticker"].tolist()
-    factor_tickers = sorted(set(["SPY"] + portfolio_df["sector_etf"].tolist()))
-
-    prices = download_price_data(tickers, factor_tickers, config)
     returns = prices.pct_change().dropna()
     metadata = fetch_company_metadata(tickers)
     df = portfolio_df.merge(metadata, on="ticker", how="left")
@@ -375,6 +404,7 @@ def analyze_portfolio(portfolio_input: pd.DataFrame | str | Path, config: Analys
     merton = merton.loc[(merton["equity_value"] > 0) & (merton["default_barrier"] > 0) & (merton["equity_vol"] > 0)].copy()
     if merton.empty:
         raise ValueError("No borrowers have enough market cap, debt, and return data for Merton estimation.")
+    excluded_after_fundamentals = sorted(set(tickers) - set(merton["ticker"]))
 
     calibrated = merton.apply(
         lambda row: calibrate_merton_asset_value_and_vol(
@@ -526,6 +556,9 @@ def analyze_portfolio(portfolio_input: pd.DataFrame | str | Path, config: Analys
 
     return {
         "portfolio_input": portfolio_df,
+        "available_tickers": available_tickers,
+        "missing_price_tickers": missing_price_tickers,
+        "excluded_after_fundamentals": excluded_after_fundamentals,
         "prices": prices,
         "firm_level": merton,
         "risk_metrics": risk_metrics,

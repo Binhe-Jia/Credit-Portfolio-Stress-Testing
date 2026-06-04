@@ -18,6 +18,7 @@ merton-credit-risk/
     credit_engine.py
     sample_portfolio.csv
     stress_test_portfolio_25.csv
+    high_pd_small_company_stress_portfolio_35.csv
     run_app.bat
 
   docs/
@@ -64,7 +65,7 @@ On Windows, you can also double-click:
 app/run_app.bat
 ```
 
-The app lets users upload a CSV, edit a portfolio table, adjust model settings, run the complete analysis, and download a ZIP file containing an executive summary and output tables.
+The app lets users upload a CSV, edit a portfolio table, adjust model settings, run the complete analysis, and download a ZIP file containing an executive summary and output tables. It also includes a preflight market-data check that can drop unavailable tickers and continue instead of stopping the full analysis.
 
 ## Run the Notebook
 
@@ -148,4 +149,3 @@ Generated app outputs are written to `app/analysis_outputs/`, which is ignored b
 ## Limitations
 
 This project is for research and prototyping. It relies on public equity data and Yahoo Finance fundamentals, which should be validated before production or credit-decision use. The model does not replace internal ratings, private financials, covenant information, collateral analysis, or expert credit review.
-
