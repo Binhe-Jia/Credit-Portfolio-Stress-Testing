@@ -1,0 +1,7 @@
+ticker,sector_group,ead,lgd
+AAPL,Technology,50000000,0.45
+JPM,Financials,80000000,0.50
+XOM,Energy,60000000,0.42
+UNH,Healthcare,70000000,0.40
+PLD,Real Estate,45000000,0.55
+

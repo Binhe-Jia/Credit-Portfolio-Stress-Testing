@@ -8,19 +8,23 @@ This repository contains a research notebook and a Streamlit app for estimating 
 merton-credit-risk/
   README.md
   requirements.txt
-  wholesale_credit_portfolio.ipynb
+  .gitignore
 
-  credit_risk_app/
+  notebooks/
+    wholesale_credit_portfolio.ipynb
+
+  app/
     app.py
     credit_engine.py
-    README.md
-    run_app.bat
     sample_portfolio.csv
     stress_test_portfolio_25.csv
-    requirements.txt
+    run_app.bat
+
+  docs/
+    methodology.md
 ```
 
-The notebook is the research and methodology version. The app is the user-facing version for uploading a portfolio and generating results.
+The notebook is the research and methodology version. The app is the user-facing version for uploading a portfolio and generating the complete analysis.
 
 ## Main Features
 
@@ -39,16 +43,9 @@ The notebook is the research and methodology version. The app is the user-facing
 
 ## Installation
 
-Create and activate a Python environment, then install the dependencies:
+Create and activate a Python environment, then install dependencies:
 
 ```bash
-pip install -r requirements.txt
-```
-
-If you are running only the app from inside `credit_risk_app`, you can also use:
-
-```bash
-cd credit_risk_app
 pip install -r requirements.txt
 ```
 
@@ -57,27 +54,27 @@ pip install -r requirements.txt
 From the repository root:
 
 ```bash
-cd credit_risk_app
+cd app
 streamlit run app.py
 ```
 
 On Windows, you can also double-click:
 
 ```text
-credit_risk_app/run_app.bat
+app/run_app.bat
 ```
 
-The app lets the user upload a CSV, edit a portfolio table, adjust model settings, run the complete analysis, and download a ZIP file containing the executive summary and output tables.
+The app lets users upload a CSV, edit a portfolio table, adjust model settings, run the complete analysis, and download a ZIP file containing an executive summary and output tables.
 
 ## Run the Notebook
 
 Open:
 
 ```text
-wholesale_credit_portfolio.ipynb
+notebooks/wholesale_credit_portfolio.ipynb
 ```
 
-The notebook contains the full research workflow, explanations, formulas, diagnostics, and export steps. It is useful for understanding the methodology and modifying the model assumptions.
+The notebook contains the full research workflow, formulas, diagnostics, and export steps. It is useful for understanding the methodology and modifying model assumptions.
 
 ## Portfolio Input Format
 
@@ -106,7 +103,7 @@ Supported aliases include:
 - `exposure` for `ead`
 - `loss_given_default` for `lgd`
 
-If sector is missing, the app assigns `User Portfolio` and uses `SPY` as the common factor. If EAD or LGD is missing, the app applies transparent fallback assumptions.
+If sector is missing, the app assigns `User Portfolio` and uses `SPY` as the common factor. If EAD or LGD is missing, the app applies fallback assumptions.
 
 ## Key Model Settings
 
@@ -120,7 +117,7 @@ If sector is missing, the app assigns `User Portfolio` and uses `SPY` as the com
 
 For small or high-quality portfolios, many simulated paths may have no defaults. In that case, VaR can be zero even when expected shortfall is positive.
 
-Example: if 99.98% of simulated paths have zero loss, then 95%, 99%, and 99.9% VaR may all equal zero. Expected shortfall can still be positive because it averages the worst tail paths, where the rare default losses occur.
+Example: if 99.98% of simulated paths have zero loss, then 95%, 99%, and 99.9% VaR may all equal zero. Expected shortfall can still be positive because it averages the worst tail paths, where rare default losses occur.
 
 ## Interpreting PD Floors
 
@@ -146,9 +143,9 @@ The app and notebook can generate:
 - top PD names
 - top expected-loss names
 
-Generated outputs are written to `analysis_outputs` in the app folder or to the configured project folder in the notebook.
+Generated app outputs are written to `app/analysis_outputs/`, which is ignored by Git.
 
 ## Limitations
 
-This project is for research and prototyping. It relies on public equity data and Yahoo Finance fundamentals, which should be validated before any production or credit-decision use. The model does not replace internal ratings, private financials, covenant information, collateral analysis, or expert credit review.
+This project is for research and prototyping. It relies on public equity data and Yahoo Finance fundamentals, which should be validated before production or credit-decision use. The model does not replace internal ratings, private financials, covenant information, collateral analysis, or expert credit review.
 
